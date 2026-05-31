@@ -1,7 +1,44 @@
-name: eksperimen
+# membuat action yang mengembalikkan dataset baru yang sudah diolah
+name: Dataset Processing
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
-on: 
-  push: 
-    branches:
-      - main
-  
+jobs:
+  process-dataset:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install mlflow
+
+      - name: Run dataset processing script
+        run: |
+          python preprocessing/automate_Andri-Kelana-Saputra.py
+      - name: Commit and push changes
+        run: |
+          git config --global user.name ${{secrets.GIT_USERNAME}}
+          git config --global user.email ${{secrets.GIT_EMAIL}}
+
+          git add .
+          git commit -m "Update processed dataset"
+          git push origin main
+
+      - name: Set up Git LFS
+        run: |
+          git config --global user.name ${{secrets.GIT_USERNAME}}
+          git config --global user.email ${{secrets.GIT_EMAIL}}
+          git lfs install
+          git lfs track "*.csv"
+          git add .gitattributes
+          git commit -m "Track CSV files with Git LFS"
+          git push origin main
