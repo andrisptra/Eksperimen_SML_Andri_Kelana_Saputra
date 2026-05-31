@@ -16,10 +16,22 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: '3.8'
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install mlflow seaborn nltk
+
+      - name: Set up Git LFS
+        run: |
+          git config --global user.name ${{secrets.GIT_USERNAME}}
+          git config --global user.email ${{secrets.GIT_EMAIL}}
+          git lfs install
+          git lfs track "*.csv"
+          git lfs pull 
+          git add .gitattributes
+          git commit -m "Track CSV files with Git LFS"
+          git push origin main
 
       - name: Run dataset processing script
         run: |
@@ -33,12 +45,4 @@ jobs:
           git commit -m "Update processed dataset"
           git push origin main
 
-      - name: Set up Git LFS
-        run: |
-          git config --global user.name ${{secrets.GIT_USERNAME}}
-          git config --global user.email ${{secrets.GIT_EMAIL}}
-          git lfs install
-          git lfs track "*.csv"
-          git add .gitattributes
-          git commit -m "Track CSV files with Git LFS"
-          git push origin main
+      -
