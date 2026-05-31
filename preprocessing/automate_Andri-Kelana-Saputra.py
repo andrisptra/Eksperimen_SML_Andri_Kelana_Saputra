@@ -12,7 +12,7 @@ from nltk.tokenize import word_tokenize
 nltk.download('punkt')
 nltk.download('stopwords')
 
-dataset_path = "../ASAP2_train_sourcetexts.csv"
+dataset_path = "ASAP2_train_sourcetexts.csv"
 df = pd.read_csv(dataset_path)
 
 
@@ -84,3 +84,6 @@ plt.show()
 # menyimpan dataset yang sudah diproses
 processed_dataset_path = "ASAP2_train_sourcetexts_processed.csv"
 df.to_csv(processed_dataset_path, index=False)
+
+if __name__ == "__main__":
+    print("Preprocessing completed. Processed dataset saved to:", processed_dataset_path)   
