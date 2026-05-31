@@ -1,0 +1,7 @@
+name: eksperimen
+
+on: 
+  push: 
+    branches:
+      - main
+  
