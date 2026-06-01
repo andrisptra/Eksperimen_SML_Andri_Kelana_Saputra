@@ -82,8 +82,9 @@ plt.ylabel('Count')
 plt.show()
 
 # menyimpan dataset yang sudah diproses
-processed_dataset_path = "ASAP2_train_sourcetexts_processed.csv"
+processed_dataset_path = "preprocessing/ASAP2_train_sourcetexts_processed.csv"
 df.to_csv(processed_dataset_path, index=False)
 
 if __name__ == "__main__":
+    print("======================================================\n")
     print("Preprocessing completed. Processed dataset saved to:", processed_dataset_path)   
