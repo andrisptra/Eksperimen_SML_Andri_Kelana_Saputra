@@ -33,13 +33,16 @@ jobs:
       - name: Run dataset processing script
         run: |
           python preprocessing/automate_Andri-Kelana-Saputra.py
+
       - name: Commit and push changes
         run: |
           git config --global user.name ${{secrets.GIT_USERNAME}}
           git config --global user.email ${{secrets.GIT_EMAIL}}
 
           git add .
-          git commit -m "Update processed dataset"
+
+          git diff --staged --quiet || git commit -m "Auto Update"
+          
           git push origin main
 
       - name: Set up Git LFS
