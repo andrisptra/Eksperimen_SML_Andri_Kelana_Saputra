@@ -82,8 +82,8 @@ jobs:
           echo "====== OUTPUT FILES ======"
           ls -lh preprocessing/asap2_preprocessing/
           echo ""
-          echo "====== Preview: asap2_preprocessing.csv (head 3 lines) ======"
-          python -c "import pandas as pd; df = pd.read_csv('preprocessing/asap2_preprocessing/asap2_preprocessing.csv'); print(df.head(3))"
+          echo "====== Preview: asap2_preprocessed.csv (head 3 lines) ======"
+          python -c "import pandas as pd; df = pd.read_csv('preprocessing/asap2_preprocessing/asap2_preprocessed.csv'); print(df.head(3))"
 
       # =========================================
       # Step 7: Commit and Push Changes
