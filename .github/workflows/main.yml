@@ -1,53 +1,98 @@
-# membuat action yang mengembalikkan dataset baru yang sudah diolah
-name: Dataset Processing
+name: Automate Dataset Processing Pipeline
+
 on:
   push:
-    branches: [ main ]
+    branches: 
+      [ main ]
+    paths:
+    - 'preprocessing/automate_Andri-Kelana-Saputra.py'
+    - 'ASAP2_train_sourcetexts.csv'
+
   pull_request:
     branches: [ main ]
+    paths:
+    - 'preprocessing/automate_Andri-Kelana-Saputra.py'
+    - 'ASAP2_train_sourcetexts.csv'
+
+  workflow_dispatch:
+    inputs:
+      input_file:
+        description: 'Path to raw dataset CSV'
+        required: false
+        default: 'ASAP2_train_sourcetexts.csv'
+      output_folder:
+        description: 'Output folder for preprocessed files'
+        required: false
+        default: 'preprocessing/asap2_preprocessing'
 
 jobs:
-  process-dataset:
+  preprocessing:
+    name: Run Preprocessing Pipeline
     runs-on: ubuntu-latest
 
-    permissions:
-      contents: write
-      pull-requests: write
-
     steps:
+      # =========================================
+      # Step 1: Checkout Repository
+      # =========================================
       - name: Checkout repository
-        uses: actions/checkout@v2
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.8'
+        uses: actions/checkout@v4
 
+      # =========================================
+      # Step 2: Set Up Python Environment
+      # =========================================
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+      
+      # =========================================
+      # Step 3: Install Dependencies
+      # =========================================
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install mlflow seaborn nltk
+          pip install pandas numpy scikit-learn nltk seaborn matplotlib
 
+      # =========================================
+      # Step 4: Pull Git LFS Files
+      # =========================================
       - name: Pull Git LFS files
         run: git lfs pull
 
+      # =========================================
+      # Step 5: Run Dataset Processing Script
+      # =========================================
       - name: Run dataset processing script
         run: |
-          python preprocessing/automate_Andri-Kelana-Saputra.py
+          INPUT_FILE="${{ github.event.inputs.input_file  || 'ASAP2_train_sourcetexts.csv' }}"
+          OuTPUT_FOLDER="${{ github.event.inputs.output_folder || 'preprocessing/asap2_preprocessing' }}"
+          echo "Using input file: $INPUT_FILE"
+          echo "Using output folder: $OuTPUT_FOLDER"
+          python preprocessing/automate_Andri-Kelana-Saputra.py \
+            --input "$INPUT_FILE" \
+            --output "$OuTPUT_FOLDER"
+            
 
+      # =========================================
+      # Step 6: Verify output files
+      # =========================================
+      - name: Verify output files
+        run: |
+          echo "====== OUTPUT FILES ======"
+          ls -lh preprocessing/asap2_preprocessing/
+          echo ""
+          echo "====== Preview: asap2_preprocessing.csv (head 3 lines) ======"
+          python -c "import pandas as pd; df = pd.read_csv('preprocessing/asap2_preprocessing/asap2_preprocessing.csv'); print(df.head(3))"
+
+      # =========================================
+      # Step 7: Commit and Push Changes
+      # =========================================
       - name: Commit and push changes
         run: |
           git config --global user.name ${{secrets.GIT_USERNAME}}
           git config --global user.email ${{secrets.GIT_EMAIL}}
-
-          git add .
-
-          git diff --staged --quiet || git commit -m "Auto Update"
-          
+          git add preprocessing/asap2_preprocessing/
+          git diff --staged --quiet || git commit -m "Auto Update: Preprocessed dataset"
           git push origin main
-
-      - name: Set up Git LFS
-        run: |
-          git config --global user.name ${{secrets.GIT_USERNAME}}
-          git config --global user.email ${{secrets.GIT_EMAIL}}
-          git lfs install
-          git push origin main
+    
