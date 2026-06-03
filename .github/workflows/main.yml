@@ -69,7 +69,7 @@ jobs:
           OuTPUT_FOLDER="${{ github.event.inputs.output_folder || 'preprocessing/asap2_preprocessing' }}"
           echo "Using input file: $INPUT_FILE"
           echo "Using output folder: $OuTPUT_FOLDER"
-          python preprocessing/automate_Andri-Kelana-Saputra.py \
+          python preprocessing/automate_Andri_Kelana_Saputra.py \
             --input "$INPUT_FILE" \
             --output "$OuTPUT_FOLDER"
             
