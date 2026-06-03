@@ -24,7 +24,7 @@ from nltk.tokenize import word_tokenize
 # ++++++++++++++++++++++++++++++++++++++
 
 def download_nltk_resources():
-    resources = ['punkt', 'stopwords', 'wordnet']
+    resources = ['punkt', 'punkt_tab', 'stopwords', 'wordnet']
     for res in resources:
         try: 
             nltk.data.find(f'tokenizers/{res}' if 'punkt' in res else f'corpora/{res}')
