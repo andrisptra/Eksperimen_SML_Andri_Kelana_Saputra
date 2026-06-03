@@ -4,15 +4,15 @@ on:
   push:
     branches: 
       [ main ]
-    paths:
-    - 'preprocessing/automate_Andri-Kelana-Saputra.py'
-    - 'ASAP2_train_sourcetexts.csv'
+    # paths:
+    # - 'preprocessing/automate_Andri-Kelana-Saputra.py'
+    # - 'ASAP2_train_sourcetexts.csv'
 
   pull_request:
     branches: [ main ]
-    paths:
-    - 'preprocessing/automate_Andri-Kelana-Saputra.py'
-    - 'ASAP2_train_sourcetexts.csv'
+    # paths:
+    # - 'preprocessing/automate_Andri-Kelana-Saputra.py'
+    # - 'ASAP2_train_sourcetexts.csv'
 
   workflow_dispatch:
     inputs:
@@ -41,7 +41,7 @@ jobs:
       # Step 2: Set Up Python Environment
       # =========================================
       - name: Set up Python 3.10
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v2
         with:
           python-version: '3.10'
           cache: 'pip'
